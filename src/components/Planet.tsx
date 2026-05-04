@@ -1,26 +1,44 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Mesh } from "three";
 import { useFrame } from "@react-three/fiber";
 
 type Props = {
+  id: string;
   position: [number, number, number];
   color: string;
   size: number;
+  onSelect: (id : string) => void;
 };
 
-export default function Planet({ position, color, size }: Props) {
+export default function Planet({ id, position, color, size, onSelect }: Props) {
   const meshRef = useRef<Mesh>(null!);
 
-  useFrame(() => {
+  const [hovered, setHovered] = useState(false);
+
+  useFrame(( {clock}) => {
+    const t = clock.getElapsedTime();
     if (meshRef.current) {
       meshRef.current.rotation.y += 0.005;
+      meshRef.current.position.y += Math.sin(t) * 0.002;
     }
   });
 
   return(
-    <mesh ref={meshRef} position={position}>
+    <mesh 
+      ref={meshRef} 
+      position={position}
+      onClick={() => onSelect(id)}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+      >
+
       <sphereGeometry args={[size, 32, 32]} />
-      <meshStandardMaterial color={color} />
+
+      <meshStandardMaterial 
+        color={color} 
+        emissive={hovered ? color : "#000000"}
+        emissiveIntensity={hovered ? 0.8 : 0}
+      />
     </mesh>
   );
 }
