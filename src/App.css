@@ -4,3 +4,16 @@
   background: black;
   overflow: hidden;
 }
+
+.panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 220px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  color: white;
+  border-radius: 12px;
+  z-index:10;
+}
