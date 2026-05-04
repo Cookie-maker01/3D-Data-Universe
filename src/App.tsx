@@ -1,11 +1,34 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import gsap from "gsap";
 
-import './App.css';
 import Planet from "./components/Planet";
 import { nodes } from "./data/nodes";
+import './App.css';
 
+function CameraController({ target} : { target: string | null }) {
+  const { camera} = useThree();
+
+  useEffect(() => {
+    if(!target) return;
+
+    const node = nodes.find((n) => n.id === target);
+    if(!node) return;
+  
+    gsap.killTweensOf(camera.position);
+
+    gsap.to(camera.position, {
+      x: node.position[0] + 2,
+      y: node.position[1] +1,
+      z: node.position[2] +3,
+      duration: 1.2,
+      ease: "power2.out",
+    });
+  }, [target, camera]);
+
+  return null;
+}
 
 export default function App() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -16,7 +39,7 @@ export default function App() {
       {selected && (
         <div className="panel">
           <h2>{selected}</h2>
-          <p>Click interaction working</p>
+          <p>Focused view activated</p>
         </div>
       )}
 
@@ -26,6 +49,8 @@ export default function App() {
         <pointLight position={[10, 10, 10]} />
 
         <Stars radius={100} depth={50} count={5000} factor={4} fade/>
+        
+        <CameraController target={selected} />
 
         {nodes.map((node) => (
           <Planet
