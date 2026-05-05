@@ -36,8 +36,8 @@ export default function Planet({ id, position, color, size, onSelect }: Props) {
 
       <meshStandardMaterial 
         color={color} 
-        emissive={hovered ? color : "#000000"}
-        emissiveIntensity={hovered ? 0.8 : 0}
+        emissive={color}
+        emissiveIntensity={hovered ? 1.2 : 0.4}
       />
     </mesh>
   );

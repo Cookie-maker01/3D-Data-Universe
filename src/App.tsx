@@ -2,6 +2,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 import { useEffect, useState } from "react";
 import gsap from "gsap";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import Planet from "./components/Planet";
 import { nodes } from "./data/nodes";
@@ -64,6 +65,14 @@ export default function App() {
         ))}
 
         <OrbitControls enableDamping />
+
+        <EffectComposer>
+          <Bloom
+            intensity={1.2}
+            luminanceThreshold={0.2}
+            luminanceSmoothing={0.9}
+          />
+        </EffectComposer>
 
       </Canvas>
     </div>
