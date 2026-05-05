@@ -49,7 +49,7 @@ export default function App() {
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} />
 
-        <Stars radius={100} depth={50} count={5000} factor={4} fade/>
+        <Stars radius={120} depth={60} count={8000} factor={4} fade/>
         
         <CameraController target={selected} />
 
@@ -68,7 +68,7 @@ export default function App() {
 
         <EffectComposer>
           <Bloom
-            intensity={1.2}
+            intensity={1.5}
             luminanceThreshold={0.2}
             luminanceSmoothing={0.9}
           />
