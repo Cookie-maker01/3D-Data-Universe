@@ -6,6 +6,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import Planet from "./components/Planet";
 import { nodes } from "./data/nodes";
+import ConnectionLines from "./components/ConnectionLines";
 import './App.css';
 
 function CameraController({ target} : { target: string | null }) {
@@ -48,6 +49,8 @@ export default function App() {
 
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} />
+
+        <ConnectionLines />
 
         <Stars radius={100} depth={50} count={5000} factor={4} fade/>
         
