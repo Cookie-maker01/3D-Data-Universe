@@ -8,10 +8,74 @@ import Planet from "./components/Planet";
 import { nodes } from "./data/nodes";
 import './App.css';
 
-function CameraController({ target} : { target: string | null }) {
+function IntroAnimation() {
   const { camera} = useThree();
 
   useEffect(() => {
+    gsap.from(camera.position, {
+      x: 0,
+      y: 0,
+      z: 20,
+      duration: 2,
+      ease: "power3.out",
+    });
+  }, [camera]);
+
+  return null;
+}
+
+function CameraTour({
+  tourMode,
+  tourIndex,
+  setTourIndex,
+  setSelected,
+}: {
+  tourMode: boolean;
+  tourIndex: number;
+  setTourIndex: (v: number) => void;
+  setSelected: (v: string | null) => void;
+}) {
+  const { camera } =useThree();
+
+  useEffect(() => {
+    if (!tourMode) return;
+
+    const node = nodes[tourIndex];
+    if(!node) return;
+
+    gsap.killTweensOf(camera.position);
+
+    gsap.to(camera.position, {
+      x: node.position[0] + 2,
+      y: node.position[1] +1,
+      z: node.position[2] +3,
+      duration: 2,
+      ease: "power2.inOut",
+      onStart: () => {
+        setSelected(node.id);
+      },
+      onComplete: () => {
+        setTimeout(() => {
+          setTourIndex((tourIndex + 1) % nodes.length);
+        }, 3000);
+      },
+    });
+  }, [tourIndex, tourMode, camera, setTourIndex, setSelected]);
+
+  return null;
+}
+
+function CameraController({
+  target,
+  enabled,
+}: {
+  target: string | null;
+  enabled: boolean;
+}) {
+  const { camera} = useThree();
+
+  useEffect(() => {
+    if(!enabled) return;
     if(!target) return;
 
     const node = nodes.find((n) => n.id === target);
@@ -26,32 +90,62 @@ function CameraController({ target} : { target: string | null }) {
       duration: 1.2,
       ease: "power2.out",
     });
-  }, [target, camera]);
+  }, [target, enabled, camera]);
 
   return null;
 }
 
 export default function App() {
   const [selected, setSelected] = useState<string | null>(null);
+  const [tourIndex, setTourIndex] = useState(0);
+  const [tourMode, setTourMode] = useState(true);
 
   return (
     <div className="app">
 
+      {/* UI */}
       {selected && (
         <div className="panel">
           <h2>{selected}</h2>
-          <p>Focused view activated</p>
+          <p>{tourMode ? "Cinematic Tour Mode" : "Interactive Mode"}</p>
         </div>
       )}
 
-      <Canvas camera={{ position: [0, 0, 6], fov: 60}}>
+      <button
+        onClick={() => setTourMode(!tourMode)}
+        style={{
+          position: "absolute",
+          bottom: 20,
+          left: 20,
+          zIndex: 10,
+          padding: "10px 16px",
+          borderRadius: "8px",
+          border: "none",
+          background: "rgba(255,255,255,0.1)",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        {tourMode ? "Stop Tour" : " Start Tour"}
+      </button>
+
+      <Canvas camera={{ position: [0, 0, 10], fov: 60}}>
 
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} />
 
         <Stars radius={120} depth={60} count={8000} factor={4} fade/>
+
+        <IntroAnimation />
+
+        <CameraTour
+          tourMode={tourMode}
+          tourIndex={tourIndex}
+          setTourIndex={setTourIndex}
+          setSelected={setSelected}
+        />
         
-        <CameraController target={selected} />
+        <CameraController target={selected} enabled={!tourMode}/>
 
         {nodes.map((node) => (
           <Planet
@@ -60,7 +154,10 @@ export default function App() {
             position={node.position as [number, number, number]}
             color={node.color}
             size={node.size}
-            onSelect={setSelected}
+            onSelect={(id) => {
+              setSelected(id);
+              setTourMode(false);
+            }}
           />
         ))}
 
