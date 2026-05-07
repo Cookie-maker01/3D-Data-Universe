@@ -100,6 +100,17 @@ export default function App() {
   const [tourIndex, setTourIndex] = useState(0);
   const [tourMode, setTourMode] = useState(true);
 
+  const content: Record<string, string> = {
+    projects:
+      "Interactive full-stack and creative frontend projects built with React, TypeScript and Three.js.",
+
+    skills:
+      "Frotend development, Three.js, React, TypeScript, UI/UX and creative coding.",
+
+    activity:
+      "Building immersive web experiences and exploring cinematic frontend systems.",
+  };
+
   return (
     <div className="app">
 
@@ -107,7 +118,7 @@ export default function App() {
       {selected && (
         <div className="panel">
           <h2>{selected}</h2>
-          <p>{tourMode ? "Cinematic Tour Mode" : "Interactive Mode"}</p>
+          <p>{selected ? content[selected] : ""}</p>
         </div>
       )}
 
@@ -164,7 +175,10 @@ export default function App() {
           />
         ))}
 
-        <OrbitControls enableDamping />
+        <OrbitControls 
+          enableDamping 
+          enablePan={false}
+        />
 
         <EffectComposer>
           <Bloom
