@@ -98,7 +98,8 @@ function CameraController({
 export default function App() {
   const [selected, setSelected] = useState<string | null>(null);
   const [tourIndex, setTourIndex] = useState(0);
-  const [tourMode, setTourMode] = useState(true);
+  const [tourMode, setTourMode] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
 
   const content: Record<string, string> = {
     projects:
@@ -111,10 +112,25 @@ export default function App() {
       "Building immersive web experiences and exploring cinematic frontend systems.",
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIntroDone(true);
+      setTourMode(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  },[]);
+
   return (
     <div className="app">
 
-      {/* UI */}
+      {!introDone && (
+        <div className="intro">
+          Entering cinematic mode...
+        </div>
+      )}
+
+      {/* Info Panel */}
       {selected && (
         <div className="panel">
           <h2>{selected}</h2>
