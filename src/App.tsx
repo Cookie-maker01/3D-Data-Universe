@@ -131,10 +131,13 @@ export default function App() {
 
       <Canvas camera={{ position: [0, 0, 10], fov: 60}}>
 
-        <ambientLight intensity={0.6} />
-        <pointLight position={[10, 10, 10]} />
+        <ambientLight intensity={0.25} />
+        <pointLight 
+          position={[10, 10, 10]} 
+          intensity={1.2}
+        />
 
-        <Stars radius={120} depth={60} count={8000} factor={4} fade/>
+        <Stars radius={150} depth={80} count={10000} factor={3} saturation={0} fade/>
 
         <IntroAnimation />
 
@@ -165,8 +168,8 @@ export default function App() {
 
         <EffectComposer>
           <Bloom
-            intensity={1.5}
-            luminanceThreshold={0.2}
+            intensity={0.7}
+            luminanceThreshold={0.45}
             luminanceSmoothing={0.9}
           />
         </EffectComposer>
